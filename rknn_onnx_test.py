@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 from rknn.api import RKNN
 
-if True:
+if False:
     # Model 1
     MODEL_INPUT_SIZE = (1, 1, 768, 1024)
     MEAN_VALUES = [0]
@@ -251,6 +251,8 @@ def letterbox(im, new_shape=(640, 640), color=(0, 0, 0)):
 
 if __name__ == '__main__':
 
+    simulation = True
+
     # Create RKNN object
     rknn = RKNN(verbose=True)
 
@@ -261,29 +263,38 @@ if __name__ == '__main__':
     rknn.config(mean_values=MEAN_VALUES, std_values=STD_VALUES, target_platform='rk3588')
     print('done')
 
-    # Load ONNX model
-    print('--> Loading model')
-    ret = rknn.load_onnx(model=ONNX_MODEL)
-    if ret != 0:
-        print('Load model failed!')
-        exit(ret)
-    print('done')
+    if simulation is True:
+        # Load ONNX model
+        print('--> Loading model')
+        ret = rknn.load_onnx(model=ONNX_MODEL)
+        if ret != 0:
+            print('Load model failed!')
+            exit(ret)
+        print('done')
 
-    # Build model
-    print('--> Building model')
-    ret = rknn.build(do_quantization=QUANTIZE_ON, dataset=DATASET)
-    if ret != 0:
-        print('Build model failed!')
-        exit(ret)
-    print('done')
+        # Build model
+        print('--> Building model')
+        ret = rknn.build(do_quantization=QUANTIZE_ON, dataset=DATASET)
+        if ret != 0:
+            print('Build model failed!')
+            exit(ret)
+        print('done')
 
-    # Export RKNN model
-    print('--> Export rknn model')
-    ret = rknn.export_rknn(RKNN_MODEL)
-    if ret != 0:
-        print('Export rknn model failed!')
-        exit(ret)
-    print('done')
+        # Export RKNN model
+        print('--> Export rknn model')
+        ret = rknn.export_rknn(RKNN_MODEL)
+        if ret != 0:
+            print('Export rknn model failed!')
+            exit(ret)
+        print('done')
+    else:
+        # Load RKNN model
+        print('--> Load rknn model')
+        ret = rknn.load_rknn(RKNN_MODEL)
+        if ret != 0:
+            print('Load rknn model failed!')
+            exit(ret)
+        print('done')
 
     '''
     # Init runtime environment
