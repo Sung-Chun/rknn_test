@@ -14,6 +14,10 @@ if False:
     STD_VALUES = [256]
     ONNX_MODEL = './ONNX_V12_TrainedModels/Model-1/train-1_23_028-model-iter_1507.onnx'
     RKNN_MODEL = 'model-1.rknn'
+
+    IMG_PATH = './1024x768x1.jpg'
+    DATASET = './dataset.txt'
+
 else:
     # Model 2
     MODEL_INPUT_SIZE = (1, 3, 768, 1024)
@@ -22,11 +26,8 @@ else:
     ONNX_MODEL = '/home/sungmin/WORK/train/EXP_320/weights/best.onnx'
     RKNN_MODEL = 'best.rknn'
 
-
-IMG_PATH = './bus.jpg'
-DATASET = './dataset.txt'
-
-
+    IMG_PATH = './1024x768x3.jpg'
+    DATASET = './dataset.txt'
 
 QUANTIZE_ON = True
 
@@ -296,7 +297,6 @@ if __name__ == '__main__':
             exit(ret)
         print('done')
 
-    '''
     # Init runtime environment
     print('--> Init runtime environment')
     ret = rknn.init_runtime()
@@ -307,10 +307,14 @@ if __name__ == '__main__':
     print('done')
 
     # Set inputs
-    img = cv2.imread(IMG_PATH)
+    img = cv2.imread(IMG_PATH, cv2.IMREAD_UNCHANGED)
     # img, ratio, (dw, dh) = letterbox(img, new_shape=(IMG_SIZE, IMG_SIZE))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    if len(img.shape) == 2:
+        print(f'  ---  reshaping the image shape to ({img.shape[0]}, {img.shape[0]}, 1)')
+        img = img.reshape([img.shape[0], img.shape[1], 1])
+    elif len(img.shape) == 3:
+        print(f'  ---  Size of the image: {img.shape}, model shape: {MODEL_INPUT_SIZE} ')
 
     # Inference
     print('--> Running model')
@@ -320,6 +324,7 @@ if __name__ == '__main__':
     np.save('./onnx_yolov5_2.npy', outputs[2])
     print('done')
 
+    '''
     # post process
     input0_data = outputs[0]
     input1_data = outputs[1]
