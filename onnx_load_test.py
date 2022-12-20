@@ -15,8 +15,8 @@ def img_test():
     img = cv2.imread(img_filename, cv2.IMREAD_UNCHANGED)
 
 #    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = cv2.resize(img, (1024, 768))
-    cv2.imwrite('./1024x768.jpg', img)
+    img = cv2.resize(img, (640, 640))
+    cv2.imwrite('./640x640x3.jpg', img)
     pass
 
 
@@ -56,5 +56,5 @@ def onnx_test():
 
 
 if __name__ == '__main__':
-#    img_test()
-    onnx_test()
+    img_test()
+#    onnx_test()

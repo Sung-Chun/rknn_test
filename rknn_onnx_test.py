@@ -20,13 +20,13 @@ if False:
 
 else:
     # Model 2
-    MODEL_INPUT_SIZE = (1, 3, 768, 1024)
+    MODEL_INPUT_SIZE = (1, 3, 640, 640)
     MEAN_VALUES = [0, 0, 0]
     STD_VALUES = [256, 256, 256]
-    ONNX_MODEL = '/home/sungmin/WORK/train/EXP_320/weights/best.onnx'
-    RKNN_MODEL = 'best.rknn'
+    ONNX_MODEL = '/home/sungmin/WORK/train/EXP_320/weights/best_640x640.onnx'
+    RKNN_MODEL = 'best_640x640.rknn'
 
-    IMG_PATH = './1024x768x3.jpg'
+    IMG_PATH = './640x640x3.jpg'
     DATASET = './dataset.txt'
 
 QUANTIZE_ON = True
@@ -307,7 +307,7 @@ if __name__ == '__main__':
     print('done')
 
     # Set inputs
-    img = cv2.imread(IMG_PATH, cv2.IMREAD_UNCHANGED)
+    img = cv2.imread(IMG_PATH)
     # img, ratio, (dw, dh) = letterbox(img, new_shape=(IMG_SIZE, IMG_SIZE))
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     if len(img.shape) == 2:
