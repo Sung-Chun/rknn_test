@@ -21,8 +21,8 @@ if False:
 else:
     # Model 2
     MODEL_INPUT_SIZE = (1, 3, 640, 640)
-    MEAN_VALUES = [0, 0, 0]
-    STD_VALUES = [256, 256, 256]
+    MEAN_VALUES = [128, 128, 128]
+    STD_VALUES = [128, 128, 128]
     ONNX_MODEL = '/home/sungmin/WORK/train/EXP_320/weights/best_640x640.onnx'
     RKNN_MODEL = 'best_640x640.rknn'
 
@@ -262,6 +262,7 @@ if __name__ == '__main__':
 #    rknn.config(mean_values=[1, 1, 1], std_values=[255, 255, 255])
 #    rknn.config(mean_values=[[123.675, 116.28, 103.53]], std_values=[[58.82, 58.82, 58.82]])
     rknn.config(mean_values=MEAN_VALUES, std_values=STD_VALUES, target_platform='rk3588')
+#    rknn.config(channel_mean_value='0 0 0 255', reorder_channel='0 1 2', batch_size=1)
     print('done')
 
     if simulation is True:
@@ -319,25 +320,29 @@ if __name__ == '__main__':
     # Inference
     print('--> Running model')
     outputs = rknn.inference(inputs=[img])
-    np.save('./onnx_yolov5_0.npy', outputs[0])
-    np.save('./onnx_yolov5_1.npy', outputs[1])
-    np.save('./onnx_yolov5_2.npy', outputs[2])
-    print('done')
+
+    print(f' sum = {outputs[0][0][...,4]}')
+    rknn.release()
 
     '''
+    np.save('./onnx_yolov5_0.npy', outputs[0])
+#    np.save('./onnx_yolov5_1.npy', outputs[1])
+#    np.save('./onnx_yolov5_2.npy', outputs[2])
+    print('done')
+
     # post process
     input0_data = outputs[0]
-    input1_data = outputs[1]
-    input2_data = outputs[2]
+#    input1_data = outputs[1]
+#    input2_data = outputs[2]
 
     input0_data = input0_data.reshape([3, -1]+list(input0_data.shape[-2:]))
-    input1_data = input1_data.reshape([3, -1]+list(input1_data.shape[-2:]))
-    input2_data = input2_data.reshape([3, -1]+list(input2_data.shape[-2:]))
+#    input1_data = input1_data.reshape([3, -1]+list(input1_data.shape[-2:]))
+#    input2_data = input2_data.reshape([3, -1]+list(input2_data.shape[-2:]))
 
     input_data = list()
     input_data.append(np.transpose(input0_data, (2, 3, 0, 1)))
-    input_data.append(np.transpose(input1_data, (2, 3, 0, 1)))
-    input_data.append(np.transpose(input2_data, (2, 3, 0, 1)))
+#    input_data.append(np.transpose(input1_data, (2, 3, 0, 1)))
+#    input_data.append(np.transpose(input2_data, (2, 3, 0, 1)))
 
     boxes, classes, scores = yolov5_post_process(input_data)
 
@@ -345,10 +350,10 @@ if __name__ == '__main__':
     if boxes is not None:
         draw(img_1, boxes, scores, classes)
     # show output
-    # cv2.imshow("post process result", img_1)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.imshow("post process result", img_1)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-    '''
     rknn.release()
 
+    '''
