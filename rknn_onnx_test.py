@@ -1,21 +1,23 @@
 import os
 import urllib
 import traceback
-import time
+import time, datetime
 import sys
 import numpy as np
 import cv2
 from rknn.api import RKNN
 
-if False:
+if True:
     # Model 1
     MODEL_INPUT_SIZE = (1, 1, 768, 1024)
     MEAN_VALUES = [0]
     STD_VALUES = [256]
-    ONNX_MODEL = './ONNX_V12_TrainedModels/Model-1/train-1_23_028-model-iter_1507.onnx'
-    RKNN_MODEL = 'model-1.rknn'
+#    ONNX_MODEL = './ONNX_V12_TrainedModels/Model-1/train-1_23_028-model-iter_1507.onnx'
+#    RKNN_MODEL = 'model-1.rknn'
+    ONNX_MODEL = './ONNX_V12_TrainedModels/Model-2/train-1_15_006-model-iter_1504.onnx'
+    RKNN_MODEL = 'model-2.rknn'
 
-    IMG_PATH = './1024x768x1.jpg'
+    IMG_PATH = './rknpu2_test/test_images/63_4654.jpg'
     DATASET = './dataset.txt'
 
 else:
@@ -308,7 +310,7 @@ if __name__ == '__main__':
     print('done')
 
     # Set inputs
-    img = cv2.imread(IMG_PATH)
+    img = cv2.imread(IMG_PATH, cv2.IMREAD_UNCHANGED)
     # img, ratio, (dw, dh) = letterbox(img, new_shape=(IMG_SIZE, IMG_SIZE))
     # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     if len(img.shape) == 2:
@@ -319,9 +321,17 @@ if __name__ == '__main__':
 
     # Inference
     print('--> Running model')
+    start_time = datetime.datetime.now()
     outputs = rknn.inference(inputs=[img])
+    end_time = datetime.datetime.now()
+    elapsed_time = end_time - start_time
+    print(f'★★  Elapsed time for inference={elapsed_time}')
 
-    print(f' sum = {outputs[0][0][...,4]}')
+    print(f'★★  Output dimension={outputs[0].shape}')
+    for i in range(outputs[0].shape[1]):
+        print(f'  C({i})  {np.argmax(outputs[0][0][i])}')
+
+#    print(f' sum = {outputs[0][0][...,4]}')
     rknn.release()
 
     '''

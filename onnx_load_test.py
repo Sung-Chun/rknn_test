@@ -8,15 +8,15 @@ def img_test():
     '''
     img_test() loads image from file, resizes it and then write to file.
     '''
-    img_filename = './16422991686913849.jpg'
+    img_filename = './rknpu2_test/test_images/63_4654.png'
 #    img_filename = './16422991588116416.jpg'
 
     # Set inputs
     img = cv2.imread(img_filename, cv2.IMREAD_UNCHANGED)
 
 #    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = cv2.resize(img, (640, 640))
-    cv2.imwrite('./640x640x3.jpg', img)
+    img = cv2.resize(img, (160, 80))
+    cv2.imwrite('./160x80x1.jpg', img)
     pass
 
 
